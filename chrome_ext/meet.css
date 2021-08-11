@@ -1,0 +1,25 @@
+.rejoinder-popout {
+  animation: rejoinder-popout .2s linear;
+  -webkit-animation: rejoinder-popout .2s linear;
+}
+@keyframes rejoinder-popout {
+  from{transform:scale(0)}
+  50%{transform:scale(1.2)}
+  to{transform:scale(1)}
+}
+@-webkit-keyframes rejoinder-popout {
+  from{-webkit-transform:scale(0)}
+  50%{-webkit-transform:scale(1.2)}
+  to{-webkit-transform:scale(1)}
+}
+
+.rejoinder-hide {
+  animation: rejoinder-hide .8s linear;
+  -webkit-animation: rejoinder-hide .8s linear;
+}
+@keyframes rejoinder-hide {
+  to{opacity: 0}
+}
+@-webkit-keyframes rejoinder-hide {
+  to{opacity: 0}
+}

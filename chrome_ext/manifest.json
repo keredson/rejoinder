@@ -1,0 +1,16 @@
+{
+  "name": "Rejoinder",
+  "description": "Google Meet emoji tool, similar to Google's internal MeetMoji tool.",
+  "version": "0.1",
+  "manifest_version": 3,
+  "action": {
+    "default_popup": "popup.html"
+  },
+ "content_scripts": [
+   {
+     "matches": ["https://meet.google.com/*"],
+     "css": ["meet.css"],
+     "js": ["meet.js"]
+   }
+ ]
+}
