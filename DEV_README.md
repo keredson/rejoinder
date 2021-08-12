@@ -4,11 +4,11 @@ If you just want to preview this extension before it's published on the Chrome W
 
 ## Install Extension Locally
 
-- Clone this repo.
-- Go to `chrome://extensions`
-- Toggle "Developer mode"
-- Click "Load unpacked"
-- Select the `rejoinder/chrome_ext` directory
+- Clone this repo (or [download a copy](https://github.com/keredson/rejoinder/archive/refs/heads/main.zip) and unzip).
+- Go to `chrome://extensions` in Google Chrome.
+- Toggle "Developer mode" (upper right corner)
+- Click the "Load unpacked" button (top left)
+- Select the `rejoinder/chrome_ext` directory in the file chooser.
 - Go to (or reload) your meeting.
 
 ## Run Server Locally
