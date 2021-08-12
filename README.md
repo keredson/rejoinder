@@ -1,23 +1,17 @@
+
 # Rejoinder
 Google Meet emoji tool, similar to Google's internal "MeetMoji" extension.
 
 > **re·join·der**: noun; */rəˈjoindər/*<br/>
 > a reply, especially a sharp or witty one.
 
-## Install Locally (Dev)
+![screenshot](screenshots/github.png)
 
-- Clone this repo.
-- Go to `chrome://extensions`
-- Toggle "Developer mode"
-- Click "Load unpacked"
-- Select the `rejoinder/chrome_ext` directory
-- Go to (or reload) your meeting.
+## Install
 
-## Run Server
+Go to the [Chrome Web Store](https://chrome.google.com/webstore/detail/rejoinder/ppkljbmmakhcdfgokefgmologajbdima) and click "Add to Chrome".
 
-You can run the server locally for testing.  Ex:
-```bash
-$ python rejoinder.py --ssl-cert ~/rejoinder.fullchain.pem --ssl-private-key ~/rejoinder.privkey.pem
-```
+## Development
 
-If you leave out the SSL params, it will run in unencrypted mode (`ws://`).
+Click [here](DEV_README.md) for development notes if you want to contribute.
+
