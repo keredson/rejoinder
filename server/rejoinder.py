@@ -32,7 +32,7 @@ async def send(frm, s, meeting_id):
   await asyncio.wait([user.ws.send(msg) for user in meetings[meeting_id]] + [asyncio.sleep(.1)]) # sleep is to rate limit users
     
 
-start_server = websockets.serve(hello, "localhost", 8765)
+start_server = websockets.serve(hello, "localhost", 15842)
 
 asyncio.get_event_loop().run_until_complete(start_server)
 asyncio.get_event_loop().run_forever()

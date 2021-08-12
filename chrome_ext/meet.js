@@ -1,5 +1,9 @@
 let emojis = ['🤯','👍','👎','😀','😢','❤️','😡','😂','😮','🤦',];
 
+//let ws_server_base = "ws://localhost:15842/ws/";
+let ws_server_base = "wss://rejoinder.kered.org:15842/ws/";
+
+
 function find_user() {
   var imgs = [...document.getElementsByTagName('img')].filter(e => e.src.startsWith('https://lh3.googleusercontent.com/'));
   if (imgs.length) {
@@ -76,7 +80,7 @@ function connect(user) {
 
   var meeting_id = window.location.href.substring(window.location.href.lastIndexOf('/')+1);
   console.log('connecting', user.name, 'to', meeting_id);
-  let ws_server = "ws://localhost:8765/ws/"+meeting_id; // "wss://rejoinder.kered.org/ws/"+meeting_id;
+  let ws_server = ws_server_base+meeting_id;
   var ws = new WebSocket(ws_server);
 
   function on_keypress(event) {
