@@ -36,8 +36,8 @@ async def send(frm, s, meeting_id):
 
 
 def serve(port:int=15842, ssl_cert:str=None, ssl_private_key:str=None):
-  '''Example DArP (Derek's Argument Parser) app...'''
-  print(ssl_cert, ssl_private_key)
+  '''Pubsub server for Rejoinder'''
+
   context = None
   if ssl_cert and ssl_private_key:
     context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
