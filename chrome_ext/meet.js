@@ -1,4 +1,4 @@
-let emojis = ['🤯','👍','👎','😀','😢','❤️','😡','😂','😮','🤦',];
+let DEFAULT_EMOJIS = ['🤯','👍','👎','😀','😢','❤️','😡','😂','😮','🤦',];
 
 //let ws_server_base = "ws://localhost:15842/ws/";
 let ws_server_base = "wss://rejoinder.kered.org:15842/ws/";
@@ -33,7 +33,7 @@ function display(meeting_id, data) {
   if (!targets.length) return;
   let target = targets[0];
   var span = document.createElement('span');
-  span.style.fontSize='20pt';
+  span.style.fontSize='30pt';
   span.style.position = 'absolute'; //'relative';
   span.style.top = Math.floor(60 + Math.random() * 25).toString() + '%';
   span.style.left = Math.floor(2 + Math.random() * 93).toString() + '%';
@@ -43,8 +43,8 @@ function display(meeting_id, data) {
   img.alt = data.name;
   img.height = '24';
   img.style.position = 'absolute';
-  img.style.top = '18pt'
-  img.style.left = '18pt'
+  img.style.top = '28pt'
+  img.style.left = '28pt'
   img.style['border-radius'] = '50%';
   img.className = 'rejoinder-popout';
   img.style['z-index'] = 1;
@@ -87,10 +87,10 @@ function connect(user) {
   ws = new WebSocket(ws_server);
 
   function on_keypress(event) {
-    if (document.activeElement.tagName==='TEXTAREA') return;
+    if (document.activeElement.tagName==='TEXTAREA' || document.activeElement.tagName==='INPUT') return;
     var n = parseInt(event.key);
     if (!isNaN(n)) {
-      var msg = {'m':emojis[n]};
+      var msg = {'m':DEFAULT_EMOJIS[n]};
       ws.send(JSON.stringify(msg))
     }
   }
@@ -166,27 +166,72 @@ function init_ui() {
   var emoji_menu = document.createElement('div');
   emoji_menu.style.position = 'absolute';
   emoji_menu.style.top = '-30pt';
-  emoji_menu.style.marginLeft = '-140pt';
+  emoji_menu.style.marginLeft = '-170pt';
   emoji_menu.style.display = 'none';
   emoji_menu.style['backdrop-filter'] = 'blur(5px)';
   emoji_menu.style['border-radius'] = '20pt';
   emoji_menu.style['padding-top'] = '1.5pt';
   emoji_menu.style.background = 'rgba(0, 0, 0, 0.2)';
-  emojis.map((s, i) => {
-    var b = document.createElement('span');
-    b.innerText = s;
-    b.style.cursor = 'pointer';
-    b.style.margin = '.4em';
-    b.style.fontSize = '20pt';
-    b.title = "Hotkey: "+i;
-    b.onclick = () => send(s);
-    emoji_menu.appendChild(b);
-  });
-  emoji_menu.appendChild(emoji_menu.children[0]); // move "0" to the end of the list (to match keyboard)
+
+  var emoji_icons = document.createElement('span');
+  emoji_menu.appendChild(emoji_icons);
+
+  // search bar
+  var search = document.createElement('input')
+  search.style['height'] = '20pt'
+  search.style['vertical-align'] = 'top'
+  search.style['border-radius'] = '20pt'
+  search.style['border'] = '0'
+  search.style['margin-top'] = '2px'
+  search.style['padding-left'] = '1em'
+  search.style['width'] = '60pt'
+  search.placeholder = 'Search...'
+  emoji_menu.prepend(search);
+  
+  function update_emojis(e) {
+    emoji_icons.innerHTML = '';
+
+    if (e && e.target && e.target.value && e.target.value.length) {
+      let search_string = e.target.value;
+      var matches = REJOINDER_ALL_EMOJIS.filter(emoji => {
+        var s = emoji.description +','+ emoji.aliases.join() +','+ emoji.tags.join();
+        return s.indexOf(search_string)>-1;
+      }).slice(0,10)
+      matches.map(emoji => {
+        console.log('matching', emoji)
+        var b = document.createElement('span');
+        b.innerText = emoji.emoji;
+        b.style.cursor = 'pointer';
+        b.style.margin = '.4em';
+        b.style.fontSize = '20pt';
+        b.onclick = () => send(emoji.emoji);
+        emoji_icons.appendChild(b);
+      });
+    } else {
+      DEFAULT_EMOJIS.map((s, i) => {
+        var b = document.createElement('span');
+        b.innerText = s;
+        b.style.cursor = 'pointer';
+        b.style.margin = '.4em';
+        b.style.fontSize = '20pt';
+        b.title = "Hotkey: "+i;
+        b.onclick = () => send(s);
+        emoji_icons.appendChild(b);
+      });
+      emoji_icons.appendChild(emoji_icons.children[0]); // move "0" to the end of the list (to match keyboard)
+    }
+
+  }
+
+  update_emojis();
+
+  search.oninput = update_emojis
+
   function toggle() {
     emoji_menu.style.display = emoji_menu.style.display=='none' ? 'block' : 'none';
   }
   emoji_button.prepend(emoji_menu)
+
   emoji_button.querySelector('button').onclick = toggle;
   node.parentElement.insertBefore(emoji_button, node.parentElement.children[3]);
 }
