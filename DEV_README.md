@@ -1,5 +1,7 @@
 # Developer Readme
 
+If you just want to preview this extension before it's published on the Chrome Web Store, just follow "Install Extension Locally".
+
 ## Install Extension Locally
 
 - Clone this repo.
