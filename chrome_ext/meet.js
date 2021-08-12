@@ -164,9 +164,13 @@ function init_ui() {
   });
   var emoji_menu = document.createElement('div');
   emoji_menu.style.position = 'absolute';
-  emoji_menu.style.top = '-20pt';
+  emoji_menu.style.top = '-30pt';
   emoji_menu.style.marginLeft = '-140pt';
   emoji_menu.style.display = 'none';
+  emoji_menu.style['backdrop-filter'] = 'blur(5px)';
+  emoji_menu.style['border-radius'] = '20pt';
+  emoji_menu.style['padding-top'] = '1.5pt';
+  emoji_menu.style.background = 'rgba(0, 0, 0, 0.2)';
   emojis.map((s, i) => {
     var b = document.createElement('span');
     b.innerText = s;
