@@ -19,7 +19,7 @@ async def hello(websocket, path):
   meeting_id = path[4:].split('?')[0]
   user_data = json.loads(await websocket.recv())
   user = User(websocket, user_data['name'], user_data['img_src'])
-  print('user', user, 'joining', meeting_id)
+  print('user', user.name, 'joining', meeting_id)
   meetings[meeting_id].add(user)
   while True:
     msg = json.loads(await websocket.recv())
