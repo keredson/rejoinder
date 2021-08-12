@@ -76,12 +76,14 @@ function display(meeting_id, data) {
   }, 5000);
 }
 
+var ws = null;
+
 function connect(user) {
 
   var meeting_id = window.location.href.substring(window.location.href.lastIndexOf('/')+1);
   console.log('connecting', user.name, 'to', meeting_id);
   let ws_server = ws_server_base+meeting_id;
-  var ws = new WebSocket(ws_server);
+  ws = new WebSocket(ws_server);
 
   function on_keypress(event) {
     if (document.activeElement.tagName==='TEXTAREA') return;
@@ -118,10 +120,14 @@ function connect(user) {
   return ws;
 }
 
-let ws = connect(user);
+connect(user);
 
 function send(s) {
   var msg = {'m':s};
+  if (!ws) {
+    console.log('not connected');
+    return;
+  }
   ws.send(JSON.stringify(msg))
 }
 
