@@ -3,6 +3,7 @@ let emojis = ['🤯','👍','👎','😀','😢','❤️','😡','😂','😮','
 //let ws_server_base = "ws://localhost:15842/ws/";
 let ws_server_base = "wss://rejoinder.kered.org:15842/ws/";
 
+let DISPLAY_MS = 4000;
 
 function find_user() {
   var imgs = [...document.getElementsByTagName('img')].filter(e => e.src.startsWith('https://lh3.googleusercontent.com/'));
@@ -66,14 +67,14 @@ function display(meeting_id, data) {
     setTimeout(() => {
       txt.style.opacity = 0;
       img.style.opacity = 0;
-    }, 750);
+    }, 750); // slightly shorter than .8s in meet.css (to prevent flashing)
     span.style.top = '96%'
-  }, 3000); //*/
+  }, DISPLAY_MS); //*/
 
   // remove element
   setTimeout(() => {
     span.remove();
-  }, 5000);
+  }, DISPLAY_MS+2000);
 }
 
 var ws = null;
