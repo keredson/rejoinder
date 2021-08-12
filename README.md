@@ -13,6 +13,16 @@ Google Meet emoji tool, similar to Google's internal "MeetMoji" extension.
 
 *Link is not live yet pending extension review.  Follow [Install Extension Locally](DEV_README.md#install-extension-locally) instructions to get a preview.*
 
+## How To Use
+
+To the left of the "raise hand" button, you should see an emoji button:
+
+![screenshot](screenshots/ui.png)
+
+Click that to toggle the emoji list.
+
+Keys `0` - `9` also work as hotkeys.
+
 ## Development
 
 Click [here](DEV_README.md) for development notes if you want to contribute.
