@@ -55,12 +55,12 @@ function display(meeting_id, data) {
   txt.innerText = data.m;
   txt.className = 'rejoinder-popout';
   span.appendChild(txt);
+  new Audio(chrome.runtime.getURL("bip.mp3")).play();
   target.appendChild(span);
   console.log(span)
 
   // fade
   setTimeout(() => {
-    console.log('fading...')
     txt.className = 'rejoinder-hide';
     img.className = 'rejoinder-hide';
     span.style.transition = '.8s';
