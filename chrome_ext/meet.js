@@ -1,3 +1,5 @@
+let emojis = ['🤯','👍','👎','😀','😢','❤️','😡','😂','😮','🤦',];
+
 function find_user() {
   var imgs = [...document.getElementsByTagName('img')].filter(e => e.src.startsWith('https://lh3.googleusercontent.com/'));
   if (imgs.length) {
@@ -28,7 +30,7 @@ function display(meeting_id, data) {
   var span = document.createElement('span');
   span.style.fontSize='20pt';
   span.style.position = 'absolute'; //'relative';
-  span.style.top = Math.floor(70 + Math.random() * 25).toString() + '%';
+  span.style.top = Math.floor(60 + Math.random() * 25).toString() + '%';
   span.style.left = Math.floor(2 + Math.random() * 93).toString() + '%';
   var img = document.createElement('img');
   img.src = data.img_src;
@@ -66,7 +68,7 @@ function display(meeting_id, data) {
 
   // remove element
   setTimeout(() => {
-    //span.remove();
+    span.remove();
   }, 5000);
 }
 
@@ -78,8 +80,10 @@ function connect(user) {
   var ws = new WebSocket(ws_server);
 
   function on_keypress(event) {
-    if (event.key=="1") {
-      var msg = {'m':'👍'};
+    if (document.activeElement.tagName==='TEXTAREA') return;
+    var n = parseInt(event.key);
+    if (!isNaN(n)) {
+      var msg = {'m':emojis[n]};
       ws.send(JSON.stringify(msg))
     }
   }
@@ -94,7 +98,7 @@ function connect(user) {
   };
 
   ws.onclose = () => {
-    console.log('onclose', listener)
+    console.log('onclose')
     document.removeEventListener("keypress", on_keypress)
     setTimeout(() => {
       connect(user);
@@ -112,3 +116,64 @@ function connect(user) {
 
 let ws = connect(user);
 
+function send(s) {
+  var msg = {'m':s};
+  ws.send(JSON.stringify(msg))
+}
+
+function init_ui() {
+  console.log('init_ui')
+  var node = Array.from(document.getElementsByClassName('google-material-icons')).find(el => el.textContent === 'call_end');
+  if (!node) {
+    setTimeout(init_ui, 1000);
+    return;
+  }
+  node = Array.from(document.getElementsByClassName('google-material-icons')).find(el => el.textContent === 'more_vert');
+  console.log('node', node)
+  while (node) {
+    console.log(node)
+    if (window.getComputedStyle(node.parentElement)['align-items']==='center') break;
+    node = node.parentElement;
+  }
+  if (!node) {
+    setTimeout(init_ui, 1000);
+    return;
+  }
+  console.log('found ', node)
+  var emoji_button = node.cloneNode(true);
+  [...emoji_button.getElementsByClassName('google-material-icons')].find(el => el.textContent === 'more_vert').innerText = 'insert_emoticon'
+  emoji_button.querySelectorAll('button').forEach(b => {
+    b.removeAttribute('jsname');
+    b.removeAttribute('jsaction');
+    b.removeAttribute('jscontroller');
+  });
+  emoji_button.querySelectorAll('div').forEach(b => {
+    b.removeAttribute('jsname');
+    b.removeAttribute('jsaction');
+    b.removeAttribute('jscontroller');
+  });
+  var emoji_menu = document.createElement('div');
+  emoji_menu.style.position = 'absolute';
+  emoji_menu.style.top = '-20pt';
+  emoji_menu.style.marginLeft = '-140pt';
+  emoji_menu.style.display = 'none';
+  emojis.map((s, i) => {
+    var b = document.createElement('span');
+    b.innerText = s;
+    b.style.cursor = 'pointer';
+    b.style.margin = '.4em';
+    b.style.fontSize = '20pt';
+    b.title = "Hotkey: "+i;
+    b.onclick = () => send(s);
+    emoji_menu.appendChild(b);
+  });
+  emoji_menu.appendChild(emoji_menu.children[0]); // move "0" to the end of the list (to match keyboard)
+  function toggle() {
+    emoji_menu.style.display = emoji_menu.style.display=='none' ? 'block' : 'none';
+  }
+  emoji_button.prepend(emoji_menu)
+  emoji_button.querySelector('button').onclick = toggle;
+  node.parentElement.insertBefore(emoji_button, node.parentElement.children[3]);
+}
+
+init_ui();
