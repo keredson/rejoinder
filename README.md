@@ -21,6 +21,23 @@ To the left of the "raise hand" button, you should see an emoji button which tog
 
 *Hint:* Keys `0` - `9` work as hotkeys.
 
+## Animations
+
+Some emojis have associated animations.
+
+### Fireworks
+
+![screenshot](screenshots/fireworks.gif)
+
+### Party Poppers
+
+![screenshot](screenshots/party.gif)
+
+### Stars
+
+![screenshot](screenshots/stars.gif)
+
+
 ## Development
 
 Click [here](DEV_README.md) for development notes if you want to contribute.
