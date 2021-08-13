@@ -9,7 +9,8 @@ import time
 
 class Meeting:
 
-  def __init__(self) -> None:
+  def __init__(self, meeting_id) -> None:
+      self.meeting_id = meeting_id
       self.users = set()
       self.touch()
   
@@ -22,8 +23,23 @@ class Meeting:
   def __len__(self):
     return len(self.users)
 
-  def send(self, msg):
-    return asyncio.wait([user.ws.send(msg) for user in self.users] + [asyncio.sleep(.1)]) # sleep is to rate limit users
+  async def send(self, frm, s):
+    self.touch()
+    msg = json.dumps({
+      'name': frm.name,
+      'img_src': frm.img_src,
+      'm': s,
+    })
+    users = list(self.users)
+    print(frm.name, 'sending', s, 'to', len(users), 'in', self.meeting_id)
+    exceptions = await asyncio.gather(*[user.ws.send(msg) for user in users] + [asyncio.sleep(.1)], return_exceptions=True) # sleep is to rate limit users
+    indices_of_dead_users = [i for i, e in enumerate(exceptions) if e]
+    for i in indices_of_dead_users:
+      self.left(users[i])
+  
+  def left(self, user):
+    print(user.name, 'left', self.meeting_id)
+    self.users.discard(user)
 
 
 class User:
@@ -34,7 +50,13 @@ class User:
       self.ws = ws
 
 
-meetings = collections.defaultdict(Meeting)
+class keydefaultdict(collections.defaultdict):
+  def __missing__(self, key):
+    ret = self[key] = self.default_factory(key)
+    return ret
+
+
+meetings = keydefaultdict(Meeting)
 
 
 async def hello(websocket, path):
@@ -42,21 +64,14 @@ async def hello(websocket, path):
   meeting_id = path[4:].split('?')[0]
   user_data = json.loads(await websocket.recv())
   user = User(websocket, user_data['name'], user_data['img_src'])
-  print('user', user.name, 'joining', meeting_id)
+  print(user.name, 'joining', meeting_id)
   meetings[meeting_id].add(user)
-  while True:
-    msg = json.loads(await websocket.recv())
-    await send(user, msg['m'], meeting_id)
-
-async def send(frm, s, meeting_id):
-  msg = json.dumps({
-    'name': frm.name,
-    'img_src': frm.img_src,
-    'm': s,
-  })
-  meeting = meetings[meeting_id]
-  print(frm.name, 'sending', s, 'to', len(meeting), 'in', meeting_id)
-  await meeting.send(msg)
+  try:
+    while True:
+      msg = json.loads(await websocket.recv())
+      await meetings[meeting_id].send(user, msg['m'])
+  except websockets.exceptions.ConnectionClosedOK:
+    meetings[meeting_id].left(user)
 
 
 def serve(port:int=15842, ssl_cert:str=None, ssl_private_key:str=None):
@@ -73,6 +88,7 @@ def serve(port:int=15842, ssl_cert:str=None, ssl_private_key:str=None):
   start_server = websockets.serve(hello, "0.0.0.0", port, ssl=context)
   asyncio.get_event_loop().run_until_complete(start_server)
   asyncio.get_event_loop().run_forever()
+  
   
 if __name__=='__main__':
   darp.prep(serve).run()
