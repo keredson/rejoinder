@@ -25,6 +25,9 @@ function find_user() {
 var user = find_user();
 console.log('user',user);
 
+var fireworks = null;
+var stop_fireworks_at = 0;
+
 function display(meeting_id, data) {
   console.log('got',data)
   //var targets = [...document.querySelectorAll('[data-meeting-code="'+ meeting_id +'"]')];
@@ -59,6 +62,13 @@ function display(meeting_id, data) {
   span.appendChild(txt);
   new Audio(chrome.runtime.getURL("bip.mp3")).play();
   target.appendChild(span);
+  if (fireworks && '🎆🧨'.indexOf(data.m)!=-1) {
+    stop_fireworks_at = Date.now() + 4*1000;
+    fireworks.start();
+    setTimeout(() => {
+      if (Date.now() > stop_fireworks_at) fireworks.stop();
+    }, 5000);
+  }
   if ('🎉🥳'.indexOf(data.m)!=-1) party.confetti(span);
   if ('🤩⭐🌟💫🌠'.indexOf(data.m)!=-1) party.sparkles(span);
   console.log(span)
@@ -226,6 +236,8 @@ function init_ui() {
     // move "0" to the end of the list (to match keyboard)
     if (emoji_icons.children.length) emoji_icons.appendChild(emoji_icons.children[0]);
 
+    fireworks = init_fireworks();
+  
   }
 
   update_emojis();
@@ -244,6 +256,43 @@ function init_ui() {
 
   emoji_button.querySelector('button').onclick = toggle;
   node.parentElement.insertBefore(emoji_button, node.parentElement.children[3]);
+}
+
+function init_fireworks() {
+  var targets = document.getElementsByTagName("c-wiz");
+  if (targets.length==0) {
+    console.log('could not init fireworks')
+    return;
+  }
+  var container = targets[0];
+  const fireworks = new Fireworks(container, {
+    rocketsPoint: 50,
+    hue: { min: 0, max: 360 },
+    delay: { min: 15, max: 30 },
+    speed: 2,
+    acceleration: 1.05,
+    friction: 0.95,
+    gravity: 1.5,
+    particles: 50,
+    trace: 3,
+    explosion: 5,
+    autoresize: true,
+    brightness: { 
+      min: 50, 
+      max: 80,
+      decay: { min: 0.015, max: 0.03 }
+    },
+    boundaries: { 
+      x: 50, 
+      y: 50, 
+      width: container.clientWidth, 
+      height: container.clientHeight 
+    },
+  });
+  fireworks._canvas.style.position = 'absolute';
+  fireworks._canvas.style['z-index'] = 1;
+  fireworks._canvas.style['pointer-events'] = 'none';
+  return fireworks;
 }
 
 init_ui();

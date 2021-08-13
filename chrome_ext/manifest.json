@@ -16,7 +16,7 @@
    {
      "matches": ["https://meet.google.com/*"],
      "css": ["meet.css"],
-     "js": ["emojis.js", "meet.js"]
+     "js": ["emojis.js", "party.js", "fireworks.js", "meet.js"]
    }
  ],
   "web_accessible_resources": [
