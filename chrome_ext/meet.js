@@ -62,12 +62,15 @@ function display(meeting_id, data) {
   span.appendChild(txt);
   new Audio(chrome.runtime.getURL("bip.mp3")).play();
   target.appendChild(span);
-  if (fireworks && '🎆🧨'.indexOf(data.m)!=-1) {
-    stop_fireworks_at = Date.now() + 4*1000;
-    fireworks.start();
-    setTimeout(() => {
-      if (Date.now() > stop_fireworks_at) fireworks.stop();
-    }, 5000);
+  if ('🎆🧨'.indexOf(data.m)!=-1) {
+    if (!fireworks) init_fireworks();
+    if (fireworks) {
+      stop_fireworks_at = Date.now() + 4*1000;
+      fireworks.start();
+      setTimeout(() => {
+        if (Date.now() > stop_fireworks_at) fireworks.stop();
+      }, 5000);
+    }
   }
   if ('🎉🥳'.indexOf(data.m)!=-1) party.confetti(span);
   if ('🤩⭐🌟💫🌠'.indexOf(data.m)!=-1) party.sparkles(span);
@@ -235,8 +238,6 @@ function init_ui() {
 
     // move "0" to the end of the list (to match keyboard)
     if (emoji_icons.children.length) emoji_icons.appendChild(emoji_icons.children[0]);
-
-    fireworks = init_fireworks();
   
   }
 
@@ -259,13 +260,14 @@ function init_ui() {
 }
 
 function init_fireworks() {
+  if (fireworks) return;
   var targets = document.getElementsByTagName("c-wiz");
   if (targets.length==0) {
     console.log('could not init fireworks')
     return;
   }
   var container = targets[0];
-  const fireworks = new Fireworks(container, {
+  fireworks = new Fireworks(container, {
     rocketsPoint: 50,
     hue: { min: 0, max: 360 },
     delay: { min: 15, max: 30 },
@@ -292,7 +294,6 @@ function init_fireworks() {
   fireworks._canvas.style.position = 'absolute';
   fireworks._canvas.style['z-index'] = 1;
   fireworks._canvas.style['pointer-events'] = 'none';
-  return fireworks;
 }
 
 init_ui();
