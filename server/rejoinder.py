@@ -4,7 +4,11 @@ import json
 import websockets
 import darp
 import ssl
+import threading
 import time
+
+
+DEAD_MEETING_TIMEOUT_SECONDS = 10*60
 
 
 class Meeting:
@@ -18,12 +22,14 @@ class Meeting:
       self.last_used = time.time()
 
   def add(self, user):
+    self.touch()
     self.users.add(user)
 
   def __len__(self):
     return len(self.users)
 
   async def send(self, frm, s):
+    if len(s)!=1: return # not a valid msg
     self.touch()
     msg = json.dumps({
       'name': frm.name,
@@ -77,6 +83,19 @@ async def hello(websocket, path):
 def serve(port:int=15842, ssl_cert:str=None, ssl_private_key:str=None):
   '''Pubsub server for Rejoinder'''
 
+  def meeting_destroyer():
+    while True:
+      now = time.time()
+      dead_meetings = [m for m in meetings.values() if not m.users and now - m.last_used > DEAD_MEETING_TIMEOUT_SECONDS]
+      if dead_meetings:
+        print(len(dead_meetings), 'meeting' if len(dead_meetings)==1 else 'meetings', 'died')
+        for meeting in dead_meetings:
+          meetings.pop(meeting.meeting_id, None)
+      time.sleep(DEAD_MEETING_TIMEOUT_SECONDS)
+  t = threading.Thread(target=meeting_destroyer)
+  t.daemon = True
+  t.start()
+
   context = None
   if ssl_cert and ssl_private_key:
     context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
@@ -89,6 +108,6 @@ def serve(port:int=15842, ssl_cert:str=None, ssl_private_key:str=None):
   asyncio.get_event_loop().run_until_complete(start_server)
   asyncio.get_event_loop().run_forever()
   
-  
+
 if __name__=='__main__':
   darp.prep(serve).run()
