@@ -205,6 +205,7 @@ function init_ui() {
   search.style['margin-top'] = '2px'
   search.style['padding-left'] = '1em'
   search.style['width'] = '60pt'
+  search.autocomplete = 'off';
   search.placeholder = 'Search...'
   emoji_menu.prepend(search);
   
