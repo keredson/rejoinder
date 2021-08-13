@@ -4,15 +4,38 @@ import json
 import websockets
 import darp
 import ssl
+import time
 
 
-meetings = collections.defaultdict(set)
+class Meeting:
+
+  def __init__(self) -> None:
+      self.users = set()
+      self.touch()
+  
+  def touch(self):
+      self.last_used = time.time()
+
+  def add(self, user):
+    self.users.add(user)
+
+  def __len__(self):
+    return len(self.users)
+
+  def send(self, msg):
+    return asyncio.wait([user.ws.send(msg) for user in self.users] + [asyncio.sleep(.1)]) # sleep is to rate limit users
+
 
 class User:
+
   def __init__(self, ws, name, img_src) -> None:
       self.name = name
       self.img_src = img_src
       self.ws = ws
+
+
+meetings = collections.defaultdict(Meeting)
+
 
 async def hello(websocket, path):
   if not path.startswith('/ws/'): return
@@ -31,8 +54,9 @@ async def send(frm, s, meeting_id):
     'img_src': frm.img_src,
     'm': s,
   })
-  print(frm.name, 'is sending', s, 'to', len(meetings[meeting_id]), 'users in', meeting_id)
-  await asyncio.wait([user.ws.send(msg) for user in meetings[meeting_id]] + [asyncio.sleep(.1)]) # sleep is to rate limit users
+  meeting = meetings[meeting_id]
+  print(frm.name, 'sending', s, 'to', len(meeting), 'in', meeting_id)
+  await meeting.send(msg)
 
 
 def serve(port:int=15842, ssl_cert:str=None, ssl_private_key:str=None):
