@@ -1,4 +1,4 @@
-let DEFAULT_EMOJIS = ['🤯','👍','👎','😀','😢','❤️','😡','😂','😮','🤦',];
+let DEFAULT_EMOJIS = ['🎉','👍','👎','😀','😢','❤️','😂','😮','🤦','🤯'];
 
 //let ws_server_base = "ws://localhost:15842/ws/";
 let ws_server_base = "wss://rejoinder.kered.org:15842/ws/";
@@ -59,6 +59,8 @@ function display(meeting_id, data) {
   span.appendChild(txt);
   new Audio(chrome.runtime.getURL("bip.mp3")).play();
   target.appendChild(span);
+  if ('🎉🥳'.indexOf(data.m)!=-1) party.confetti(span);
+  if ('🤩⭐🌟💫🌠'.indexOf(data.m)!=-1) party.sparkles(span);
   console.log(span)
 
   // fade
