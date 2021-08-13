@@ -17,7 +17,7 @@ Google Meet emoji tool, similar to Google's internal "MeetMoji" extension.
 
 To the left of the "raise hand" button, you should see an emoji button which toggles the UI:
 
-![screenshot](screenshots/ui.png)
+![screenshot](screenshots/ui.gif)
 
 *Hint:* Keys `0` - `9` work as hotkeys.
 
