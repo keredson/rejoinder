@@ -21,7 +21,7 @@
  ],
   "web_accessible_resources": [
     {
-      "resources": ["bip.mp3"],
+      "resources": ["bip.mp3", "rejoinder.mp3"],
       "matches": ["https://meet.google.com/*"]
 
     }
