@@ -29,7 +29,7 @@ class Meeting:
     return len(self.users)
 
   async def send(self, frm, s):
-    if len(s)!=1: return # not a valid msg
+    if len(s) not in (1,2): return # not a valid msg
     self.touch()
     msg = json.dumps({
       'name': frm.name,
