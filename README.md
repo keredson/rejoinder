@@ -7,9 +7,9 @@ Google Meet emoji tool, inspired by Google's internal "MeetMoji" extension.
 
 ![screenshot](screenshots/example.gif)
 
-## Install
+## How To Install
 
-Go to the [Chrome Web Store](https://chrome.google.com/webstore/detail/rejoinder/ppkljbmmakhcdfgokefgmologajbdima) and click `Add to Chrome`
+Go to the Chrome Web Store [extension page](https://chrome.google.com/webstore/detail/rejoinder/ppkljbmmakhcdfgokefgmologajbdima) and click `Add to Chrome`
 
 ## How To Use
 
