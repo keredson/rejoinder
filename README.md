@@ -9,11 +9,11 @@ Google Meet emoji tool, inspired by Google's internal "MeetMoji" extension.
 
 ## Install
 
-Go to the [Chrome Web Store](https://chrome.google.com/webstore/detail/rejoinder/ppkljbmmakhcdfgokefgmologajbdima) and click "Add to Chrome".
+Go to the [Chrome Web Store](https://chrome.google.com/webstore/detail/rejoinder/ppkljbmmakhcdfgokefgmologajbdima) and click `Add to Chrome`
 
 ## How To Use
 
-To the left of the "raise hand" button, you should see an emoji button which toggles the UI:
+Join a Google Meet meeting.  To the left of the "raise hand" button, you should see an emoji button which toggles the UI:
 
 ![screenshot](screenshots/ui.gif)
 
