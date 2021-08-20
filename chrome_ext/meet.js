@@ -7,6 +7,8 @@ let DISPLAY_MS = 4000;
 
 var displayed_emojis = DEFAULT_EMOJIS;
 
+var rejoinder_user_count = 0;
+
 function find_user() {
   var imgs = [...document.getElementsByTagName('img')].filter(e => e.src.startsWith('https://lh3.googleusercontent.com/'));
   if (imgs.length) {
@@ -27,6 +29,19 @@ console.log('user',user);
 
 var fireworks = null;
 var stop_fireworks_at = 0;
+
+function update_user_count(user_count) {
+  console.log('user_count', user_count)
+  rejoinder_user_count = user_count
+  user_count -= 1 // don't include yourself
+  let user_count_span = document.getElementById('rejoinder_user_count_span')
+  if (user_count_span) {
+    
+    user_count_span.innerText = user_count;
+    user_count_span.style.display = user_count > 0 ? 'inline' : 'none';
+    user_count_span.title = String(user_count) + ' other Rejoinder ' + (user_count==1 ? 'user' : 'users') + ' in this meeting.'
+  }
+}
 
 function display(meeting_id, data) {
   console.log('got',data)
@@ -115,7 +130,10 @@ function connect(user) {
   ws = new WebSocket(ws_server);
 
   ws.onmessage = function (event) {
-    display(meeting_id, JSON.parse(event.data))
+    let msg = JSON.parse(event.data)
+    console.log('rejoinder: got', msg)
+    if (msg.m) display(meeting_id, msg)
+    if (msg.user_count) update_user_count(msg.user_count)
   }
 
   ws.onerror = (e) => {
@@ -133,7 +151,7 @@ function connect(user) {
 
   ws.onopen = () => {
     console.log('... connection established')
-    ws.send(JSON.stringify(user));
+    ws.send(JSON.stringify({...user, 'version':chrome.runtime.getManifest().version}));
     listener = document.addEventListener("keypress", on_keypress);
     
   }
@@ -192,6 +210,11 @@ function init_ui() {
   emoji_menu.style['padding-top'] = '1.5pt';
   emoji_menu.style.background = 'rgba(0, 0, 0, 0.2)';
 
+  var user_count_span = document.createElement('span');
+  user_count_span.id = 'rejoinder_user_count_span'
+  user_count_span.style = 'position: absolute; border-radius: 50%; background: #5f6368; min-width: 1.2em; margin-left: -1em; display:none;'
+  emoji_button.appendChild(user_count_span);
+
   var emoji_icons = document.createElement('span');
   emoji_menu.appendChild(emoji_icons);
 
@@ -243,6 +266,7 @@ function init_ui() {
   }
 
   update_emojis();
+  setTimeout(() => update_user_count(rejoinder_user_count), 1000);
 
   search.oninput = update_emojis
   search.onkeydown = event => {
