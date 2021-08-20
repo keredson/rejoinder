@@ -41,7 +41,7 @@ class Meeting:
       'm': s,
     })
     print(frm.name, 'sending', s, 'to', len(self.users), 'in', self.meeting_id)
-    self._send(msg)
+    await self._send(msg)
 
   async def _send(self, msg, users=None):
     if users is None:
