@@ -3,4 +3,5 @@ window.onload = function() {
     new Audio(chrome.runtime.getURL("rejoinder.mp3")).play();
     return false;
   }
+  document.getElementById('rejoinder_version').textContent = 'v' + chrome.runtime.getManifest().version;
 }
